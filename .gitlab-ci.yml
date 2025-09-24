@@ -1,0 +1,59 @@
+image: jeedckr/qt6-dev:6.8.3
+
+stages:
+  - build
+  - test
+  - docs
+
+build:
+  stage: build 
+  artifacts:
+    paths:
+      - build
+  script:
+    - echo "compiling main application"
+    - cmake -DCMAKE_PREFIX_PATH=/opt/Qt/6.8.3/gcc_64 -S ./landrop -B ./build -G Ninja 
+    - cmake --build ./build
+    - echo "project built successfully"
+
+build-plus:
+  stage: build 
+  artifacts:
+    paths:
+      - build-plus
+  script:
+    - echo "compiling landrop-plus application"
+    - cmake -DCMAKE_PREFIX_PATH=/opt/Qt/6.8.3/gcc_64 -S ./landrop-plus -B ./build-plus -G Ninja 
+    - cmake --build ./build-plus
+    - echo "landrop-plus built successfully"
+
+
+build-test:
+  stage: build
+  artifacts:
+    paths:
+      - build-test
+  script:
+    - echo "compiling test application"
+    - cmake -DCMAKE_PREFIX_PATH=/opt/Qt/6.8.3/gcc_64 -S ./landrop-test -B ./build-test -G Ninja 
+    - cmake --build ./build-test
+    - echo "project built successfully"
+
+test:
+  stage: test
+  dependencies:
+    - build-test
+  script:
+    - echo "running tests..."
+    - cd build-test
+    - ctest --verbose --output-on-failure
+    - echo "tests run successfully"
+
+documentation:
+  stage: docs
+  artifacts:
+    paths:
+      - docs
+  script:
+    - echo "generating documentation"
+    - doxygen
