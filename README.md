@@ -1,0 +1,1 @@
+LANDrop, a cross-platform peer-to-peer (P2P) file transfer application over a local area network (LAN), developed in C++ with Qt6. The application does not rely on any third-party server, any database, and operates exclusively locally.
